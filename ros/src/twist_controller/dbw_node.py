@@ -97,7 +97,7 @@ class DBWNode(object):
 
     def dbw_enabled_cb(self, msg):
         self.dbw_enabled = msg
-        rospy.loginfo("Received current linear velocity: %b\n", self.dbw_enabled)
+        rospy.loginfo("Received current linear velocity: %r\n", self.dbw_enabled)
 
     def twist_cmd_cb(self, msg):
         self.req_linear_velocity = msg.twist.linear.x
