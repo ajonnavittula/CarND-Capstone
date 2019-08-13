@@ -23,7 +23,7 @@ as well as to verify your TL classifier.
 TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
-LOOKAHEAD_WPS = 200 # Number of waypoints we will publish. You can change this number
+LOOKAHEAD_WPS = 50 # Number of waypoints we will publish. You can change this number
 MAX_DECEL = 0.5
 
 class WaypointUpdater(object):
@@ -70,6 +70,8 @@ class WaypointUpdater(object):
 
       if self.traffic_waypoint_idx == -1 or (self.traffic_waypoint_idx >= farthest_idx):
         lane.waypoints = base_waypoints
+        #rospy.logwarn("traffic wp idx: %r, closest_idx: %r",
+        #              self.traffic_waypoint_idx, closest_idx)
       else:
         lane.waypoints = self.decelerate_waypoints(base_waypoints, closest_idx)
 
@@ -86,11 +88,12 @@ class WaypointUpdater(object):
         stop_idx = max(self.traffic_waypoint_idx - closest_idx - 2, 0)
         dist = self.distance(waypoints, i, stop_idx)
         vel = math.sqrt(2 * MAX_DECEL * dist)
+        if vel < 1.:
+          vel = 0.
         
         wp.twist.twist.linear.x = min(vel, waypoint.twist.twist.linear.x)
         temp.append(wp)
-        rospy.loginfo("Changed linear velocity from %f to %f\n",
-                      waypoint.twist.twist.linear.x, wp.twist.twist.linear.x)
+        
       return temp
 
 
@@ -126,7 +129,7 @@ class WaypointUpdater(object):
 
 
     def traffic_cb(self, msg):
-        self.traffic_waypoint_idx = msg
+        self.traffic_waypoint_idx = msg.data
 
     def obstacle_cb(self, msg):
         self.obstacle_waypoint = msg
@@ -143,6 +146,8 @@ class WaypointUpdater(object):
         for i in range(wp1, wp2+1):
             dist += dl(waypoints[wp1].pose.pose.position, waypoints[i].pose.pose.position)
             wp1 = i
+            #rospy.logwarn("calculating distance: \nwp1: %r, i: %r, waypoint_len: %r",
+            #  wp1, i, len(waypoints))
         return dist
 
 

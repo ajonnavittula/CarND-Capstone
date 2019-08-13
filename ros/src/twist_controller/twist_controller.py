@@ -16,7 +16,7 @@ class Controller(object):
         									max_lat_accel, max_steer_angle)
 
         kp = 0.3
-        ki = 0.1
+        ki = 0.01
         kd = 0.
         mn = 0.
         mx = 0.5
@@ -28,6 +28,7 @@ class Controller(object):
 
         self.vehicle_mass = vehicle_mass
         self.wheel_radius = wheel_radius
+        self.decel_limit = decel_limit
 
         self.last_time = get_time()
 
@@ -51,15 +52,15 @@ class Controller(object):
         self.last_time = get_time()
 
         throttle = self.throttle_controller.step(vel_error, dt)
-        brake = 0
+        brake = 0.
 
         if req_linear_velocity == 0. and current_velocity < 0.1:
-        	throttle = 0
+        	throttle = 0.
         	brake = 700
 
         elif throttle < .1 and vel_error < 0:
-        	throttle = 0
-        	decel = max(vel_error, self.decel_limit)
-        	brake = abs(decel) * self.vehicle_mass * self.wheel_radius
+            throttle = 0.
+            decel = max(vel_error, self.decel_limit)
+            brake = abs(decel) * self.vehicle_mass * self.wheel_radius
 
         return throttle, brake, steering 
