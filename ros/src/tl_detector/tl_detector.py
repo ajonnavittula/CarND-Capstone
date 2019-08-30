@@ -107,7 +107,6 @@ class TLDetector(object):
             int: index of the closest waypoint in self.waypoints
 
         """
-        #TODO implement
         return self.waypoint_tree.query([x, y], 1)[1]
 
     def get_light_state(self, light):
@@ -120,8 +119,6 @@ class TLDetector(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-        # return light.state
-
         if(not self.has_image):
             self.prev_light_loc = None
             return False
@@ -129,9 +126,8 @@ class TLDetector(object):
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
 
         #Get classification
-        state = self.light_classifier.get_classification(cv_image)
+        return self.light_classifier.get_classification(cv_image)
 
-        return state
 
     def process_traffic_lights(self):
         """Finds closest visible traffic light, if one exists, and determines its
@@ -151,7 +147,6 @@ class TLDetector(object):
             car_position = self.get_closest_waypoint(self.pose.pose.position.x,
                                                      self.pose.pose.position.y)
 
-        #TODO find the closest visible traffic light (if one exists)
             min_dist = 999
             for i, light in enumerate(self.lights):
                 line = stop_line_positions[i]

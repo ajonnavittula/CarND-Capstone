@@ -35,7 +35,6 @@ class Controller(object):
     def control(self, current_velocity, req_linear_velocity, req_angular_velocity, 
     			dbw_enabled):
 
-        # TODO: Change the arg, kwarg list to suit your needs
         # Return throttle, brake, steer
         if not dbw_enabled:
         	self.throttle_controller.reset()

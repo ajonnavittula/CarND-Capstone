@@ -35,12 +35,8 @@ class WaypointUpdater(object):
         rospy.Subscriber('/traffic_waypoint', Int32, self.traffic_cb)
         rospy.Subscriber('/obstacle_waypoint', Int32, self.obstacle_cb)
 
-        # TODO: Add a subscriber for /traffic_waypoint and /obstacle_waypoint below
-
-
         self.final_waypoints_pub = rospy.Publisher('final_waypoints', Lane, queue_size=1)
 
-        # TODO: Add other member variables you need below
         self.traffic_waypoint_idx = None
         self.obstacle_waypoint = None
         self.current_pose = None
@@ -70,8 +66,7 @@ class WaypointUpdater(object):
 
       if self.traffic_waypoint_idx == -1 or (self.traffic_waypoint_idx >= farthest_idx):
         lane.waypoints = base_waypoints
-        #rospy.logwarn("traffic wp idx: %r, closest_idx: %r",
-        #              self.traffic_waypoint_idx, closest_idx)
+
       else:
         lane.waypoints = self.decelerate_waypoints(base_waypoints, closest_idx)
 
@@ -116,11 +111,9 @@ class WaypointUpdater(object):
       return closest_idx
 
     def pose_cb(self, msg):
-        # TODO: Implement
         self.current_pose = msg
 
     def waypoints_cb(self, waypoints):
-        # TODO: Implement
         self.base_waypoints = waypoints
         if not self.waypoints_2D:
           self.waypoints_2D = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] \
@@ -146,8 +139,7 @@ class WaypointUpdater(object):
         for i in range(wp1, wp2+1):
             dist += dl(waypoints[wp1].pose.pose.position, waypoints[i].pose.pose.position)
             wp1 = i
-            #rospy.logwarn("calculating distance: \nwp1: %r, i: %r, waypoint_len: %r",
-            #  wp1, i, len(waypoints))
+            
         return dist
 
 
